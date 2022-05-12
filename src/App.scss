@@ -1,0 +1,143 @@
+@mixin button($padding, $radius, $background, $width: auto, $height: auto, $cursor: pointer) {
+  border: none;
+  outline: none;
+
+  width: $width;
+  height: $height;
+  padding: $padding;
+  border-radius: $radius;
+
+  background: $background;
+
+  cursor: $cursor;
+}
+
+@mixin text($family, $size, $color, $fontWeight: 400, $lineHeight: normal) {
+  color: $color;
+  font-size: $size;
+  font-family: $family;
+  font-weight: $fontWeight;
+  line-height: $lineHeight;
+
+  margin: 0;
+}
+
+@mixin flex($justify-content: flex-start, $align-items: stretch, $direction: row) {
+  display: flex;
+  justify-content: $justify-content;
+  align-items: $align-items;
+  flex-direction: $direction;
+}
+
+.App {
+  @include flex(center, center);
+  width: 100vw;
+  height: 100vh;
+}
+
+.calendar {
+  &__header {
+    @include flex(space-between, center);
+    &__action {
+      @include button(6px 0, 0, transparent);
+      @include text(Arial, 12px, #3d3d3d, 600);
+      width: 36px;
+    }
+    &__title {
+      @include text(Arial, 16px, #3d3d3d, 700);
+    }
+  }
+}
+
+.datepicker {
+  &-container {
+    width: 320px;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  }
+  &__header {
+    @include flex(space-between, flex-start);
+    margin-bottom: 16px;
+    &__title {
+      &-container {
+      }
+      @include text(Arial, 22px, #3d3d3d, 700);
+      &:first-child {
+        margin-bottom: 6px;
+      }
+    }
+    &__action {
+      @include button(0, 0, transparent);
+    }
+  }
+  &__calendar {
+    .ant-picker-panel {
+      border-top: 0;
+    }
+    .ant-picker-content {
+      height: auto;
+      thead {
+        tr {
+          th {
+            font-weight: 500;
+          }
+        }
+      }
+      tbody {
+        tr {
+          &:first-child {
+            .ant-picker-cell {
+              color: transparent;
+              pointer-events: none;
+            }
+            .ant-picker-cell-in-view {
+              color: #3d3d3d;
+              pointer-events: visible;
+            }
+          }
+          &:not(:first-child) {
+            .ant-picker-cell {
+              display: none;
+            }
+            .ant-picker-cell-in-view {
+              display: table-cell;
+            }
+          }
+        }
+      }
+    }
+
+    .ant-picker-calendar-date {
+      @include flex(center, center);
+      margin: auto;
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+    }
+    .ant-picker-cell-selected {
+      .ant-picker-calendar-date {
+        background-color: orange;
+        border: 1px solid orange;
+      }
+    }
+    .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner {
+      &::before {
+        border: 0;
+      }
+    }
+    .ant-picker-calendar-date-today {
+      border: 1px solid orange;
+    }
+  }
+  &__footer {
+    @include flex(flex-end);
+    &__action {
+      @include button(0, 0, transparent);
+      @include text(Arial, 14px, #3d3d3d, 700);
+      &:first-child {
+        margin-right: 12px;
+      }
+    }
+  }
+}
