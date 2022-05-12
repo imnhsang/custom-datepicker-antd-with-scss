@@ -7,4 +7,4 @@ The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
 
-![alt text](https://github.com/[imnhsang]/[custom-date-picker-antd]/blob/[main]/demo.png?raw=true
+![alt text](https://github.com/imnhsang/custom-datepicker-antd/blob/main/demo.png)
