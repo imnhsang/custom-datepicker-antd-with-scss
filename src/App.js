@@ -1,12 +1,16 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 import moment from 'moment'
+import classNames from 'classnames'
 
 import { Calendar } from 'antd'
+
+import useClickAway from './useClickAway'
 
 import 'antd/dist/antd.css'
 
 import './App.scss'
+
 
 moment.updateLocale('en', {
   weekdaysMin: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
@@ -52,13 +56,19 @@ const CalendarHeader = ({ value, onChange, onChangeMonth, onClose }) => {
   )
 }
 
+
 function App() {
-  const [selectedDate, setSelectedDate] = useState(moment())
+  const calendarSelectRef = useRef(null);
 
-  const handleClickButton = (name) => console.info(`${name} button clicked`)
+  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedDateInPicker, setSelectedDateInPicker] = useState('')
+  const [showCalendarSelect, setShowCalendarSelect] = useState(false)
 
-  const handleSelectDate = (val) => {
-    setSelectedDate(val)
+  const handleShowCalendarSelect = () => setShowCalendarSelect(true)
+  const handleCloseCalendarSelect = () => setShowCalendarSelect(false)
+
+  const handleSelectDateInPicker = (val) => {
+    setSelectedDateInPicker(val)
   }
 
   const handleChangeMonth = ({ type = 'prev', value = moment(), onChange }) => {
@@ -73,45 +83,63 @@ function App() {
     return onChange?.(newDate);
   }
 
-
   const handleSubmit = () => {
-    console.info('Selected date: ', selectedDate)
+    setSelectedDate(selectedDateInPicker);
+    handleCloseCalendarSelect()
   }
 
+  useClickAway(calendarSelectRef, handleCloseCalendarSelect, ['click'])
 
   return (
     <div className="App">
-      <div className="datepicker-container">
-        <div className='datepicker__calendar'>
-          <Calendar
-            mode='month'
-            fullscreen={false}
-            locale={{ firstWeekDay: 1 }}
-            headerRender={(props) =>
-              <CalendarHeader
-                onClose={() => handleClickButton('Close')}
-                onChangeMonth={handleChangeMonth}
-                {...props}
-              />
-            }
-            value={selectedDate}
-            onSelect={handleSelectDate}
+      <div className='datepicker' ref={calendarSelectRef} >
+        <button
+          className='datepicker-btn'
+          disabled={showCalendarSelect}
+          onClick={handleShowCalendarSelect}
+        >
+          <input
+            type='text'
+            disabled
+            placeholder={showCalendarSelect ? (selectedDateInPicker ? moment(selectedDateInPicker).format('MM/DD/YYYY') : 'Select date') : 'Select date'}
+            className={classNames('datepicker-input', { active: showCalendarSelect })}
+            value={!showCalendarSelect ? (selectedDate ? moment(selectedDate).format('MM/DD/YYYY') : '') : ''}
           />
-        </div>
-        <div className="datepicker__footer">
-          <button
-            className='datepicker__footer__action'
-            onClick={() => handleClickButton('Cancel')}
-          >
-            Cancel
-          </button>
-          <button
-            className='datepicker__footer__action'
-            onClick={handleSubmit}
-          >
-            OK
-          </button>
-        </div>
+        </button>
+        {showCalendarSelect &&
+          <div className="datepicker-select" >
+            <div className='datepicker__calendar'>
+              <Calendar
+                mode='month'
+                fullscreen={false}
+                locale={{ firstWeekDay: 1 }}
+                headerRender={(props) =>
+                  <CalendarHeader
+                    onClose={handleCloseCalendarSelect}
+                    onChangeMonth={handleChangeMonth}
+                    {...props}
+                  />
+                }
+                value={selectedDateInPicker || moment()}
+                onSelect={handleSelectDateInPicker}
+              />
+            </div>
+            <div className="datepicker__footer">
+              <button
+                className='datepicker__footer__action'
+                onClick={handleCloseCalendarSelect}
+              >
+                Cancel
+              </button>
+              <button
+                className='datepicker__footer__action'
+                onClick={handleSubmit}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        }
       </div>
     </div>
   );

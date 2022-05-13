@@ -12,6 +12,18 @@
   cursor: $cursor;
 }
 
+@mixin input($padding, $radius, $background, $width: auto, $height: auto) {
+  border: none;
+  outline: none;
+
+  width: $width;
+  height: $height;
+
+  padding: $padding;
+  border-radius: $radius;
+  background: $background;
+}
+
 @mixin text($family, $size, $color, $fontWeight: 400, $lineHeight: normal) {
   color: $color;
   font-size: $size;
@@ -30,9 +42,8 @@
 }
 
 .App {
-  @include flex(center, center);
-  width: 100vw;
-  height: 100vh;
+  @include flex();
+  padding: 36px;
 }
 
 .calendar {
@@ -50,11 +61,33 @@
 }
 
 .datepicker {
-  &-container {
+  margin: auto;
+  position: relative;
+  &-btn {
+    @include button(0, 0, transparent);
+  }
+  &-input {
+    @include input(6px 12px, 6px, transparent);
+    border: 1px solid gray;
+    &:hover {
+      border-color: orange;
+      cursor: pointer;
+    }
+    &.active {
+      border-color: orange;
+    }
+  }
+  &-select {
     width: 320px;
     border-radius: 16px;
     padding: 24px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transform: translate(0, 8px);
+    background-color: #fff;
+    z-index: 2;
   }
   &__header {
     @include flex(space-between, flex-start);
