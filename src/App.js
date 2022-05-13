@@ -64,7 +64,10 @@ function App() {
   const [selectedDateInPicker, setSelectedDateInPicker] = useState('')
   const [showCalendarSelect, setShowCalendarSelect] = useState(false)
 
-  const handleShowCalendarSelect = () => setShowCalendarSelect(true)
+  const handleShowCalendarSelect = () => {
+    setShowCalendarSelect(true)
+    setSelectedDateInPicker(selectedDate || '')
+  }
   const handleCloseCalendarSelect = () => setShowCalendarSelect(false)
 
   const handleSelectDateInPicker = (val) => {
@@ -88,7 +91,12 @@ function App() {
     handleCloseCalendarSelect()
   }
 
-  useClickAway(calendarSelectRef, handleCloseCalendarSelect, ['click'])
+  const handleCancel = () => {
+    setSelectedDateInPicker('');
+    handleCloseCalendarSelect()
+  }
+
+  useClickAway(calendarSelectRef, handleCancel, ['click'])
 
   return (
     <div className="App">
@@ -115,7 +123,7 @@ function App() {
                 locale={{ firstWeekDay: 1 }}
                 headerRender={(props) =>
                   <CalendarHeader
-                    onClose={handleCloseCalendarSelect}
+                    onClose={handleCancel}
                     onChangeMonth={handleChangeMonth}
                     {...props}
                   />
@@ -127,7 +135,7 @@ function App() {
             <div className="datepicker__footer">
               <button
                 className='datepicker__footer__action'
-                onClick={handleCloseCalendarSelect}
+                onClick={handleCancel}
               >
                 Cancel
               </button>
